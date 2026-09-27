@@ -1,0 +1,13 @@
+# --- secrets / environment files (never commit real values) -----------------
+# Keep the template, ignore every real environment file.
+.env
+.env.*
+!.env.example
+
+# Node backend artefacts (the backend has no dependencies, but keep it tidy)
+node_modules/
+npm-debug.log*
+
+# Registered usernames collected by the offline-first username feature.
+# This is personal data: never commit it.
+server/data/

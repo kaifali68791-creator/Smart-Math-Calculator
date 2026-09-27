@@ -1,0 +1,158 @@
+/* =============================================================================
+   Smart Math Calculator - private admin page
+   -----------------------------------------------------------------------------
+   Scoped to admin.html only, so no existing stylesheet is edited and no
+   existing component is affected. Reuses the design tokens from base.css
+   (--surface, --surface-2, --border, --text, --muted, --accent, --radius,
+   --shadow, --danger) so the page matches the app in light and dark themes.
+   ============================================================================= */
+
+.app--admin .admin {
+  max-width: 620px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin__badge {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin__title {
+  font-size: clamp(1.2rem, 4.6vw, 1.45rem);
+  letter-spacing: -0.01em;
+}
+
+.admin__desc {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.admin__form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.admin__label {
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.admin__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.admin__input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.admin__error {
+  color: var(--danger);
+  font-size: 0.82rem;
+}
+
+.admin__error[hidden] {
+  display: none;
+}
+
+.admin__btn {
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 650;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.admin__btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.admin__btn--primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+.admin__btn--ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.admin__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.admin__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin__total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface-2);
+}
+
+.admin__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  counter-reset: none;
+}
+
+.admin__item {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface-2);
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.admin__empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.admin__empty[hidden] {
+  display: none;
+}
+
+.admin__note {
+  color: var(--muted);
+  font-size: 0.76rem;
+}

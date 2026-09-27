@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Browser check - Smart Math Calculator</title>
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/calculator.css" />
+  <link rel="stylesheet" href="../css/history.css" />
+  <link rel="stylesheet" href="../css/solver.css" />
+</head>
+<body>
+  <!--
+    Integration test for the real modules and the real boot file (js/app.js).
+    Open this file in a browser, or run it headless:
+
+      msedge --headless=new --disable-gpu --dump-dom --virtual-time-budget=4000 "file:///.../tests/browser-check.html"
+
+    The fixture mirrors the data attributes of index.html and the harness
+    restores the previous localStorage content afterwards, so it never destroys
+    the history of the real app.
+  -->
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">=</span>
+        <span class="brand__text">
+          <span class="brand__name" data-app-name>Smart Math Calculator</span>
+          <span class="brand__version" data-app-version>v1.4.0</span>
+        </span>
+      </div>
+      <nav class="app-nav" aria-label="Sections">
+        <button class="app-nav__item is-active" type="button" data-view-target="calculator" aria-current="true">Calculator</button>
+        <button class="app-nav__item" type="button" data-view-target="solver">Smart Solver</button>
+      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Change colour theme">
+        <span class="theme-toggle__icon" aria-hidden="true">&#9680;</span>
+        <span data-theme-label>Auto</span>
+      </button>
+    </header>
+
+    <main class="app-main">
+      <section class="view is-active" data-view-panel="calculator" id="view-calculator">
+        <div class="calc-layout">
+          <section class="card calculator is-basic" data-calculator>
+            <div class="calculator__toolbar">
+              <div class="segmented" role="group" aria-label="Calculator mode">
+                <button
+                  class="segmented__item is-active"
+                  type="button"
+                  data-calc-mode-toggle="basic"
+                  aria-pressed="true"
+                >Basic</button>
+                <button
+                  class="segmented__item"
+                  type="button"
+                  data-calc-mode-toggle="scientific"
+                  aria-pressed="false"
+                >Scientific</button>
+              </div>
+              <div class="segmented segmented--angle" role="group" aria-label="Angle unit">
+                <button
+                  class="segmented__item is-active"
+                  type="button"
+                  data-angle-toggle="deg"
+                  aria-pressed="true"
+                >DEG</button>
+                <button
+                  class="segmented__item"
+                  type="button"
+                  data-angle-toggle="rad"
+                  aria-pressed="false"
+                >RAD</button>
+              </div>
+            </div>
+            <div class="display" data-display role="status" aria-live="polite" aria-label="Calculator display">
+              <div class="display__main" data-display-main>0</div>
+              <div class="display__sub" data-display-sub></div>
+            </div>
+            <div class="keypad keypad--sci" data-keypad-sci aria-label="Scientific functions"></div>
+            <div class="keypad" data-keypad></div>
+            <p class="calculator__hint">keyboard hint</p>
+          </section>
+
+          <aside class="card history">
+            <header class="history__header">
+              <h2 class="history__title">History <span class="history__count" data-history-count>0</span></h2>
+              <button class="history__clear" type="button" data-history-clear>Clear</button>
+            </header>
+            <p class="history__notice" data-history-notice hidden></p>
+            <p class="history__empty" data-history-empty>No calculations yet.</p>
+            <ul class="history__list" data-history-list></ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" data-view-panel="solver" id="view-solver" hidden>
+        <div class="card solver" data-solver>
+          <p class="solver__badge">Local solver</p>
+          <h2 class="solver__title">Smart Math Solver</h2>
+          <p class="solver__desc">Enter any mathematics question and choose how you want the solution.</p>
+          <div class="solver__modes" role="group" aria-label="Solution mode">
+            <button class="solver__mode is-active" type="button" data-solver-mode="direct" aria-pressed="true">Direct Answer</button>
+            <button class="solver__mode" type="button" data-solver-mode="full" aria-pressed="false">Full Explanation</button>
+          </div>
+          <p class="solver__mode-hint" id="solver-mode-hint">Mode hint.</p>
+          <label class="solver__label" for="solver-question">Your math question</label>
+          <textarea class="solver__input" id="solver-question" data-solver-question rows="4" placeholder="Type your math question here..." aria-describedby="solver-mode-hint solver-status"></textarea>
+          <div class="solver__actions">
+            <button class="solver__btn solver__btn--primary" type="button" data-solver-solve>Solve Question</button>
+            <button class="solver__btn solver__btn--ghost" type="button" data-solver-clear>Clear</button>
+          </div>
+          <div class="solver__result" data-solver-result data-result-kind="idle" hidden>
+            <span class="solver__source" data-solver-source hidden></span>
+            <h3 class="solver__result-title" data-solver-result-title></h3>
+            <p class="solver__result-body" id="solver-status" data-solver-result-body role="status" aria-live="polite"></p>
+          </div>
+          <div class="solver__examples">
+            <h3 class="solver__examples-title">Try an example</h3>
+            <div class="solver__examples-list">
+              <button type="button" data-solver-example data-question="Solve 2x + 5 = 15">Solve 2x + 5 = 15</button>
+              <button type="button" data-solver-example data-question="What is 25% of 800?">What is 25% of 800?</button>
+              <button type="button" data-solver-example data-question="Solve x2 - 5x + 6 = 0">Solve x2 - 5x + 6 = 0</button>
+              <button type="button" data-solver-example data-question="Find the derivative of x2 + 3x">Find the derivative of x2 + 3x</button>
+              <button type="button" data-solver-example data-question="Find the area of a circle with radius 7">Find the area of a circle with radius 7</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="card" style="margin: 16px;">
+    <h1>Browser integration check</h1>
+    <pre id="test-output">running...</pre>
+  </div>
+
+  <script src="../js/core/expression-engine.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/core/calculator-model.js"></script>
+  <script src="../js/services/storage.js"></script>
+  <script src="../js/services/history-store.js"></script>
+  <script src="../js/services/settings-store.js"></script>
+  <script src="../js/services/math-solver.js"></script>
+  <script src="../js/services/ai-math-solver.js"></script>
+  <script src="../js/ui/dom.js"></script>
+  <script src="../js/ui/theme.js"></script>
+  <script src="../js/ui/calculator-view.js"></script>
+  <script src="../js/ui/calculator-modes.js"></script>
+  <script src="../js/ui/history-view.js"></script>
+  <script src="../js/ui/navigation.js"></script>
+  <script src="../js/ui/solver-view.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="browser-check.js"></script>
+</body>
+</html>

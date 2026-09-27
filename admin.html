@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--
+  Smart Math Calculator - PRIVATE admin page (Admin User Management)
+
+  This page is deliberately NOT linked from the normal application UI: there is
+  no Admin button, no Admin navigation item and no reference to this file in
+  index.html. Reach it by opening this file directly.
+
+  SECURITY: the page being unlinked is NOT the protection. The real protection
+  is the server-side ADMIN_TOKEN, checked by server/server.js on
+  GET /api/admin/usernames with a constant-time comparison. This page only asks
+  for that token and shows the result; it cannot grant access to anyone, and a
+  wrong token returns nothing.
+
+  The token is never present in this file. It is typed at runtime, held only in
+  JavaScript memory for this page's lifetime, and is never written to
+  localStorage, sessionStorage, cookies or IndexedDB.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin User Management - Smart Math Calculator</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <div class="app app--admin">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">=</span>
+        <span class="brand__text">
+          <span class="brand__name">Admin User Management</span>
+          <span class="brand__version">Smart Math Calculator</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <!-- Login: the token is typed here and goes straight to the API call. -->
+      <section class="card admin" data-admin-login aria-label="Admin sign in">
+        <p class="admin__badge">Private page</p>
+        <h1 class="admin__title">Admin User Management</h1>
+        <p class="admin__desc">Enter the admin token to view the registered usernames. The token is checked by the server and is never saved on this device.</p>
+        <form class="admin__form" data-admin-token-form>
+          <label class="admin__label" for="admin-token">Admin Token</label>
+          <input
+            class="admin__input"
+            id="admin-token"
+            data-admin-token
+            type="password"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="Enter the admin token"
+          />
+          <p class="admin__error" data-admin-login-error role="status" aria-live="polite" hidden></p>
+          <button class="admin__btn admin__btn--primary" type="submit" data-admin-login-submit>Access Admin Panel</button>
+        </form>
+      </section>
+
+      <!-- Dashboard: shown only after the server accepted the token. -->
+      <section class="card admin" data-admin-dashboard aria-label="Registered usernames" hidden>
+        <div class="admin__head">
+          <h2 class="admin__title">Registered Usernames</h2>
+          <div class="admin__actions">
+            <button class="admin__btn admin__btn--ghost" type="button" data-admin-refresh>Refresh</button>
+            <button class="admin__btn admin__btn--ghost" type="button" data-admin-logout>Logout</button>
+          </div>
+        </div>
+        <p class="admin__total" data-admin-total></p>
+        <p class="admin__error" data-admin-error role="status" aria-live="polite" hidden></p>
+        <p class="admin__empty" data-admin-empty hidden>No usernames have been registered yet.</p>
+        <ol class="admin__list" data-admin-usernames></ol>
+        <p class="admin__note">Total counts distinct usernames. Two people who choose the same name are recorded as one.</p>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p class="app-footer__brand">Smart Math Calculator</p>
+      <span>This page shows usernames only. No other data is collected or displayed.</span>
+    </footer>
+  </div>
+
+  <!-- frontend configuration (endpoint URL only - never a key or a token) -->
+  <script src="js/config.js"></script>
+  <script src="js/ui/dom.js"></script>
+  <script src="js/services/admin-users-service.js"></script>
+  <script src="js/ui/admin-users-view.js"></script>
+  <script>
+    /* Boot only the admin page. No calculator, no solver, no username popup. */
+    (function () {
+      'use strict';
+      var endpoint = window.SMC_CONFIG && window.SMC_CONFIG.adminUsernamesEndpoint
+        ? window.SMC_CONFIG.adminUsernamesEndpoint
+        : '';
+      var service = SMC.createAdminUsersService({ endpoint: endpoint });
+      var view = SMC.createAdminUsersView({ service: service });
+      if (view) { view.init(); }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Smart Math Calculator">
+  <title>Smart Math Calculator</title>
+  <defs>
+    <linearGradient id="smc-face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4c8dff" />
+      <stop offset="1" stop-color="#1f52d0" />
+    </linearGradient>
+    <radialGradient id="smc-sheen" cx="0.30" cy="0.20" r="0.66">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- soft hexagon badge: a deliberate non-square silhouette -->
+  <path fill="url(#smc-face)" d="M 436 87.88 A 152 152 0 0 1 588 87.88 L 841.3 234.12 A 152 152 0 0 1 917.3 365.76 L 917.3 658.24 A 152 152 0 0 1 841.3 789.88 L 588 936.12 A 152 152 0 0 1 436 936.12 L 182.7 789.88 A 152 152 0 0 1 106.7 658.24 L 106.7 365.76 A 152 152 0 0 1 182.7 234.12 Z" />
+
+  <!-- top-left sheen for depth -->
+  <path fill="url(#smc-sheen)" d="M 436 87.88 A 152 152 0 0 1 588 87.88 L 841.3 234.12 A 152 152 0 0 1 917.3 365.76 L 917.3 658.24 A 152 152 0 0 1 841.3 789.88 L 588 936.12 A 152 152 0 0 1 436 936.12 L 182.7 789.88 A 152 152 0 0 1 106.7 658.24 L 106.7 365.76 A 152 152 0 0 1 182.7 234.12 Z" />
+
+  <!-- mathematical identity: a square root, with a precision node at the bar tip -->
+  <path d="M 240 500 L 330 655 L 470 385 L 775 385" fill="none" stroke="#ffffff" stroke-width="60" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="775" cy="385" r="45" fill="#ffffff" />
+</svg>
+

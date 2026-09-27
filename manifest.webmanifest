@@ -1,0 +1,35 @@
+{
+  "id": "./",
+  "name": "Smart Math Calculator",
+  "short_name": "Smart Math Calculator",
+  "description": "A mobile friendly calculator that also includes a scientific keypad, a local maths solver with step-by-step explanations, an optional AI fallback, a number base converter, an age calculator and five languages.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#eef1f7",
+  "theme_color": "#2f6df6",
+  "categories": ["education", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

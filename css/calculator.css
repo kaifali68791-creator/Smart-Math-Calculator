@@ -1,0 +1,290 @@
+/* =============================================================================
+   Smart Math Calculator - calculator (display + keypad)
+   Instant feedback: the only transition is a 60ms background on :active.
+   ============================================================================= */
+
+.calc-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(12px, 2vw, 18px);
+  align-items: start;
+}
+
+.calculator {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2vw, 14px);
+}
+
+/* ------------------------------------- toolbar (mode + angle unit toggles) */
+
+.calculator__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 10px;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+
+.segmented__item {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.08s linear, color 0.08s linear;
+}
+
+.segmented__item:hover {
+  color: var(--text);
+}
+
+.segmented__item.is-active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.segmented--angle .segmented__item {
+  min-width: 48px;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ display */
+
+.display {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: clamp(92px, 22vw, 116px);
+  padding: clamp(10px, 2.6vw, 16px);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.display__main {
+  font-size: clamp(1.9rem, 8.5vw, 2.5rem);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  text-align: right;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.display__main::-webkit-scrollbar,
+.display__sub::-webkit-scrollbar {
+  display: none;
+}
+
+.display__main.is-medium {
+  font-size: clamp(1.6rem, 6.6vw, 2.05rem);
+}
+
+.display__main.is-small {
+  font-size: clamp(1.3rem, 5.2vw, 1.55rem);
+}
+
+.display__main.is-tiny {
+  font-size: clamp(1.05rem, 4.2vw, 1.25rem);
+}
+
+.display__sub {
+  min-height: 1.25em;
+  font-size: clamp(0.82rem, 3.4vw, 0.98rem);
+  font-weight: 550;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-variant-numeric: tabular-nums;
+}
+
+.display__sub.is-preview {
+  color: var(--muted);
+}
+
+.display__sub.is-error {
+  color: var(--danger);
+}
+
+.display.is-result .display__main {
+  font-weight: 750;
+}
+
+.display.is-error .display__main {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------- keypad */
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(6px, 1.6vw, 10px);
+}
+
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(46px, 11vw, 60px);
+  padding: 6px 4px;
+  border: 1px solid var(--key-border);
+  border-radius: var(--radius-key);
+  background: var(--key-bg);
+  color: var(--text);
+  font-size: clamp(1.05rem, 4.4vw, 1.3rem);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background-color 0.06s linear, transform 0.06s linear;
+}
+
+.key:hover {
+  background: var(--key-active);
+}
+
+.key:active {
+  background: var(--key-active);
+  transform: translateY(1px);
+}
+
+.key--operator {
+  background: var(--operator-bg);
+  color: var(--accent-strong);
+  font-size: clamp(1.15rem, 4.8vw, 1.4rem);
+}
+
+.key--operator:active {
+  background: var(--accent-soft);
+}
+
+.key--function {
+  background: var(--operator-bg);
+  color: var(--muted);
+  font-size: clamp(0.95rem, 3.9vw, 1.1rem);
+  font-weight: 650;
+}
+
+.key--function:active {
+  background: var(--key-active);
+  color: var(--text);
+}
+
+.key--equals {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-size: clamp(1.3rem, 5.4vw, 1.6rem);
+}
+
+.key--equals:hover,
+.key--equals:active {
+  background: var(--accent-strong);
+}
+
+.key--span-cols {
+  grid-column: span 2;
+}
+
+.key--span-rows {
+  grid-row: span 2;
+}
+
+/* ------------------------------------------------ scientific keypad (Part 2) */
+
+.keypad--sci {
+  display: none;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(5px, 1.4vw, 8px);
+}
+
+.calculator.is-scientific .keypad--sci {
+  display: grid;
+}
+
+.key--sci {
+  min-height: clamp(36px, 8.2vw, 46px);
+  padding: 4px 2px;
+  background: var(--operator-bg);
+  color: var(--accent-strong);
+  font-size: clamp(0.74rem, 2.9vw, 0.92rem);
+  font-weight: 650;
+}
+
+.key--sci:hover,
+.key--sci:active {
+  background: var(--accent-soft);
+}
+
+/* ----------------------------------------------------------------------- hint */
+
+.calculator__hint {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ----------------------------------------------------------------- desktop */
+
+@media (min-width: 900px) {
+  .calc-layout {
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 340px);
+  }
+
+  .key {
+    min-height: 62px;
+  }
+
+  .key--sci {
+    min-height: 50px;
+  }
+}
+
+/* Very small phones: keep everything on one screen without in-page scrolling. */
+@media (max-height: 700px) and (max-width: 640px) {
+  .display {
+    min-height: 78px;
+  }
+
+  .key {
+    min-height: 42px;
+  }
+
+  .key--sci {
+    min-height: 34px;
+    font-size: 0.72rem;
+  }
+
+  .calculator__hint {
+    display: none;
+  }
+}

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title data-i18n="app.meta.title">Smart Math Calculator</title>
+  <meta name="description" data-i18n-attr="content:app.meta.description" content="A fast, mobile friendly calculator that runs completely in your browser. Percentages, brackets and local history included." />
+  <meta name="theme-color" content="#eef1f7" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0f19" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/calculator.css" />
+  <link rel="stylesheet" href="css/history.css" />
+  <link rel="stylesheet" href="css/solver.css" />
+  <link rel="stylesheet" href="css/username.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">=</span>
+        <span class="brand__text">
+          <span class="brand__name" data-app-name>Smart Math Calculator</span>
+          <span class="brand__version" data-app-version>v1.4.0</span>
+        </span>
+      </div>
+
+      <nav class="app-nav" aria-label="Sections" data-i18n-attr="aria-label:nav.aria.sections">
+        <button class="app-nav__item is-active" type="button" data-view-target="calculator" data-i18n="nav.calculator" aria-current="true">Calculator</button>
+        <button class="app-nav__item" type="button" data-view-target="solver" data-i18n="nav.solver">Smart Solver</button>
+        <button class="app-nav__item" type="button" data-view-target="converter" data-i18n="nav.converter">Converter</button>
+        <button class="app-nav__item" type="button" data-view-target="age" data-i18n="nav.age">Age</button>
+        <button class="app-nav__item" type="button" data-view-target="about" data-i18n="nav.about">About</button>
+      </nav>
+
+      <span class="app-greeting" data-username-greeting hidden></span>
+
+      <!-- Phase 1 language selector. Plain <select> so it is keyboard and
+           screen-reader friendly with no custom widget. data-i18n-attr gives it
+           a translated accessible label. -->
+      <label class="lang-select">
+        <span class="lang-select__label" data-i18n="label.language">Language</span>
+        <select
+          class="lang-select__input"
+          data-language-select
+          data-i18n-attr="aria-label:label.language"
+        >
+          <option value="en" data-i18n="lang.name.en">English</option>
+          <option value="hi" data-i18n="lang.name.hi">हिंदी</option>
+          <option value="hi-Latn" data-i18n="lang.name.hi-Latn">Roman Hindi</option>
+          <option value="te" data-i18n="lang.name.te">తెలుగు</option>
+          <option value="te-Latn" data-i18n="lang.name.te-Latn">Roman Telugu</option>
+        </select>
+      </label>
+
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Change colour theme" data-i18n-attr="aria-label:theme.aria.toggle">
+        <span class="theme-toggle__icon" aria-hidden="true">&#9680;</span>
+        <span data-theme-label data-i18n="theme.label.auto">Auto</span>
+      </button>
+    </header>
+
+    <main class="app-main">
+      <!-- ================= Calculator ================= -->
+      <section class="view is-active" data-view-panel="calculator" role="region" aria-label="Calculator" data-i18n-attr="aria-label:nav.calculator" id="view-calculator">
+        <div class="calc-layout">
+          <section class="card calculator is-basic" data-calculator aria-label="Calculator keypad" data-i18n-attr="aria-label:calc.aria.keypad">
+            <div class="calculator__toolbar">
+              <div class="segmented" role="group" aria-label="Calculator mode" data-i18n-attr="aria-label:calc.aria.mode">
+                <button
+                  class="segmented__item is-active"
+                  type="button"
+                  data-calc-mode-toggle="basic"
+                  aria-pressed="true"
+                  data-i18n="calc.mode.basic"
+                >Basic</button>
+                <button
+                  class="segmented__item"
+                  type="button"
+                  data-calc-mode-toggle="scientific"
+                  aria-pressed="false"
+                  data-i18n="calc.mode.scientific"
+                >Scientific</button>
+              </div>
+              <div class="segmented segmented--angle" role="group" aria-label="Angle unit for trigonometry" data-i18n-attr="aria-label:calc.aria.angle">
+                <button
+                  class="segmented__item is-active"
+                  type="button"
+                  data-angle-toggle="deg"
+                  aria-pressed="true"
+                >DEG</button>
+                <button
+                  class="segmented__item"
+                  type="button"
+                  data-angle-toggle="rad"
+                  aria-pressed="false"
+                >RAD</button>
+              </div>
+            </div>
+
+            <div class="display" data-display role="status" aria-live="polite" aria-label="Calculator display" data-i18n-attr="aria-label:calc.aria.display">
+              <div class="display__main" data-display-main>0</div>
+              <div class="display__sub" data-display-sub></div>
+            </div>
+
+            <div class="keypad keypad--sci" data-keypad-sci aria-label="Scientific functions" data-i18n-attr="aria-label:calc.aria.scientific"></div>
+            <div class="keypad" data-keypad aria-label="Calculator keys" data-i18n-attr="aria-label:calc.aria.keys"></div>
+
+            <p class="calculator__hint" data-i18n="calc.hint">
+              Keyboard: 0-9 &middot; + &minus; &times; &divide; &middot; % &middot; ^ &middot; ! &middot; ( ) &middot; Enter = equals &middot; Backspace &middot; Esc = clear
+            </p>
+          </section>
+
+          <aside class="card history" aria-label="Calculation history" data-i18n-attr="aria-label:history.aria.panel">
+            <header class="history__header">
+              <h2 class="history__title">
+                <span data-i18n="label.history">History</span>
+                <span class="history__count" data-history-count>0</span>
+              </h2>
+              <button class="history__clear" type="button" data-history-clear data-i18n="label.clear">Clear</button>
+            </header>
+
+            <p class="history__notice" data-history-notice hidden></p>
+            <p class="history__empty" data-history-empty>
+              <span data-i18n="history.empty.lead">No calculations yet. Press</span> <strong>=</strong> <span data-i18n="history.empty.tail">and the calculation shows up here.</span>
+            </p>
+            <ul class="history__list" data-history-list></ul>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================= Smart Solver (Part 3A: interface only, no engine) ================= -->
+      <section class="view" data-view-panel="solver" role="region" aria-label="Smart Solver" data-i18n-attr="aria-label:nav.solver" id="view-solver" hidden>
+        <div class="card solver" data-solver>
+          <p class="solver__badge" data-i18n="solver.badge">Local first &middot; optional AI fallback</p>
+          <h2 class="solver__title" data-i18n="solver.title">Smart Math Solver</h2>
+          <p class="solver__desc" data-i18n="solver.desc">Enter any mathematics question and choose how you want the solution.</p>
+          <p class="solver__note" data-i18n="solver.note">Supported questions are answered on this device: arithmetic, percentages and fractions, simple linear and quadratic equations, powers, roots, basic trigonometry and simple area/circumference questions. Anything else falls back to the optional AI solver when a backend endpoint is configured, and is reported honestly as not supported otherwise.</p>
+          <div class="solver__modes" role="group" aria-label="Solution mode" data-i18n-attr="aria-label:solver.aria.mode">
+            <button class="solver__mode is-active" type="button" data-solver-mode="direct" aria-pressed="true" data-i18n="solver.mode.direct">Direct Answer</button>
+            <button class="solver__mode" type="button" data-solver-mode="full" aria-pressed="false" data-i18n="solver.mode.full">Full Explanation</button>
+          </div>
+          <p class="solver__mode-hint" id="solver-mode-hint" data-i18n="solver.mode.hint">Direct Answer shows only the final answer. Full Explanation shows the steps the solver used.</p>
+          <label class="solver__label" for="solver-question" data-i18n="solver.label.question">Your math question</label>
+          <textarea class="solver__input" id="solver-question" data-solver-question rows="4" placeholder="Type your math question here..." data-i18n-attr="placeholder:solver.placeholder.question" aria-describedby="solver-mode-hint solver-status" autocomplete="off" spellcheck="false"></textarea>
+          <div class="solver__mathkbd">
+            <button class="solver__btn solver__btn--ghost solver__mathkbd-toggle" type="button" data-math-keyboard-toggle aria-expanded="false" aria-controls="solver-math-keyboard" data-i18n="keyboard.toggle" data-i18n-attr="aria-label:keyboard.aria.toggle">&#9000; Math Keyboard</button>
+            <div class="mathkbd" id="solver-math-keyboard" data-math-keyboard-panel role="group" aria-label="Math keyboard" data-i18n-attr="aria-label:keyboard.aria.panel" hidden>
+              <p class="mathkbd__hint" data-i18n="keyboard.hint">Tap a key to insert it where the cursor is. Your text is never changed in any other way.</p>
+              <div class="mathkbd__group">
+                <h3 class="mathkbd__group-title" data-i18n="keyboard.group.operators">Operators &amp; brackets</h3>
+                <div class="mathkbd__keys" data-math-keyboard-keys="operators"></div>
+              </div>
+              <div class="mathkbd__group">
+                <h3 class="mathkbd__group-title" data-i18n="keyboard.group.symbols">Symbols</h3>
+                <div class="mathkbd__keys" data-math-keyboard-keys="symbols"></div>
+              </div>
+              <div class="mathkbd__group">
+                <h3 class="mathkbd__group-title" data-i18n="keyboard.group.powers">Powers</h3>
+                <div class="mathkbd__keys" data-math-keyboard-keys="powers"></div>
+              </div>
+              <div class="mathkbd__group">
+                <h3 class="mathkbd__group-title" data-i18n="keyboard.group.functions">Functions</h3>
+                <div class="mathkbd__keys" data-math-keyboard-keys="functions"></div>
+              </div>
+              <div class="mathkbd__group">
+                <h3 class="mathkbd__group-title" data-i18n="keyboard.group.extra">More</h3>
+                <div class="mathkbd__keys" data-math-keyboard-keys="extra"></div>
+              </div>
+            </div>
+          </div>
+          <div class="solver__actions">
+            <button class="solver__btn solver__btn--primary" type="button" data-solver-solve data-i18n="solver.btn.solve">Solve Question</button>
+            <button class="solver__btn solver__btn--ghost" type="button" data-solver-clear data-i18n="label.clear">Clear</button>
+          </div>
+          <div class="solver__result solver__result--info" data-solver-result data-result-kind="idle" hidden>
+            <span class="solver__source" data-solver-source hidden></span>
+            <h3 class="solver__result-title" data-solver-result-title></h3>
+            <p class="solver__result-body" id="solver-status" data-solver-result-body role="status" aria-live="polite"></p>
+          </div>
+          <div class="solver__examples">
+            <h3 class="solver__examples-title" data-i18n="solver.examples.title">Try an example</h3>
+            <p class="solver__examples-hint" data-i18n="solver.examples.hint">Selecting an example only fills the question box. Choose a mode and press Solve Question.</p>
+            <div class="solver__examples-list">
+              <button type="button" data-solver-example data-question="Solve 2x + 5 = 15">Solve 2x + 5 = 15</button>
+              <button type="button" data-solver-example data-question="What is 25% of 800?">What is 25% of 800?</button>
+              <button type="button" data-solver-example data-question="Solve x&#178; - 5x + 6 = 0">Solve x&#178; - 5x + 6 = 0</button>
+              <button type="button" data-solver-example data-question="Find the derivative of x&#178; + 3x">Find the derivative of x&#178; + 3x</button>
+              <button type="button" data-solver-example data-question="Find the area of a circle with radius 7">Find the area of a circle with radius 7</button>
+            </div>
+          </div>
+          <p class="solver__offline" data-i18n="solver.offline">Calculator and supported solver questions stay on this device - no account, no server. The AI fallback runs only for unsupported questions and only when a backend endpoint is configured.</p>
+        </div>
+      </section>
+
+      <!-- ================= Number System Converter (offline) ================= -->
+      <section class="view" data-view-panel="converter" role="region" aria-label="Number System Converter" data-i18n-attr="aria-label:converter.title" id="view-converter" hidden>
+        <div class="card tool">
+          <p class="tool__badge" data-i18n="tool.badge.offline">Works offline</p>
+          <h2 class="tool__title" data-i18n="converter.title">Number System Converter</h2>
+          <p class="tool__desc" data-i18n="converter.desc">Convert a number between decimal, binary, octal and hexadecimal. Everything happens in this browser - nothing is sent anywhere.</p>
+
+          <div class="tool__field">
+            <label class="tool__label" for="base-from" data-i18n="converter.label.from">From</label>
+            <select class="tool__select" id="base-from" data-base-from aria-label="Select the number system you are converting from." data-i18n-attr="aria-label:converter.aria.from">
+              <option value="decimal" data-i18n="converter.base.decimal">Decimal</option>
+              <option value="binary" data-i18n="converter.base.binary">Binary</option>
+              <option value="octal" data-i18n="converter.base.octal">Octal</option>
+              <option value="hexadecimal" data-i18n="converter.base.hexadecimal">Hexadecimal</option>
+            </select>
+          </div>
+
+          <div class="tool__field">
+            <label class="tool__label" for="base-input" data-i18n="converter.label.number">Number</label>
+            <input
+              class="tool__input"
+              id="base-input"
+              data-base-input
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="10"
+              aria-label="Enter your number."
+              data-i18n-attr="aria-label:converter.aria.number"
+              aria-describedby="base-help"
+            />
+            <p class="tool__hint" id="base-help" data-i18n="converter.hint">Binary uses only 0 and 1. Octal uses 0 to 7. Decimal uses 0 to 9. Hexadecimal uses 0 to 9 and the letters A to F.</p>
+          </div>
+
+          <div class="tool__field">
+            <label class="tool__label" for="base-to" data-i18n="converter.label.to">To</label>
+            <select class="tool__select" id="base-to" data-base-to aria-label="Select the number system you want to convert to." data-i18n-attr="aria-label:converter.aria.to">
+              <option value="binary" data-i18n="converter.base.binary">Binary</option>
+              <option value="octal" data-i18n="converter.base.octal">Octal</option>
+              <option value="hexadecimal" data-i18n="converter.base.hexadecimal">Hexadecimal</option>
+              <option value="decimal" data-i18n="converter.base.decimal">Decimal</option>
+            </select>
+          </div>
+
+          <div class="tool__actions">
+            <button class="tool__btn tool__btn--primary" type="button" data-base-convert data-i18n="converter.btn.convert">Convert</button>
+            <button class="tool__btn tool__btn--ghost" type="button" data-base-copy data-i18n="converter.btn.copy">Copy result</button>
+          </div>
+
+          <div class="tool__result" data-base-result role="status" aria-live="polite" hidden>
+            <p class="tool__result-title">
+              <span data-base-result-from>Decimal</span> <span data-i18n="converter.result.phrase">converted to</span> <span data-base-result-to>Binary</span>
+            </p>
+            <p class="tool__result-value" data-base-result-text></p>
+          </div>
+
+          <div class="tool__error" data-base-error role="alert" hidden>
+            <p data-base-error-text></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= Age Calculator (offline) ================= -->
+      <section class="view" data-view-panel="age" role="region" aria-label="Age Calculator" data-i18n-attr="aria-label:age.title" id="view-age" hidden>
+        <div class="card tool">
+          <p class="tool__badge" data-i18n="tool.badge.offline">Works offline</p>
+          <h2 class="tool__title" data-i18n="age.title">Age Calculator</h2>
+          <p class="tool__desc" data-i18n="age.desc">Enter your date of birth to see how old you are. Your date is read in this browser only - it is never sent or stored anywhere.</p>
+
+          <div class="tool__field">
+            <label class="tool__label" for="age-dob" data-i18n="age.label.dob">Date of birth</label>
+            <input
+              class="tool__input"
+              id="age-dob"
+              data-age-dob
+              type="date"
+              aria-label="Enter your date of birth."
+              data-i18n-attr="aria-label:age.aria.dob"
+              aria-describedby="age-help"
+            />
+            <p class="tool__hint" id="age-help" data-i18n="age.hint">Leap years and different month lengths are handled for you.</p>
+          </div>
+
+          <div class="tool__actions">
+            <button class="tool__btn tool__btn--primary" type="button" data-age-calculate data-i18n="age.btn.calculate">Calculate age</button>
+            <button class="tool__btn tool__btn--ghost" type="button" data-age-refresh data-i18n="age.btn.refresh">Refresh totals</button>
+          </div>
+
+          <div class="tool__error" data-age-error role="alert" hidden>
+            <p data-age-error-text></p>
+          </div>
+
+          <div class="tool__result" data-age-result role="status" aria-live="polite" hidden>
+            <p class="tool__result-title" data-i18n="age.result.title">Your age</p>
+            <ul class="tool__stats">
+              <li><span class="tool__stat-value" data-age-years>0</span><span class="tool__stat-label" data-i18n="age.stat.years">Years</span></li>
+              <li><span class="tool__stat-value" data-age-months>0</span><span class="tool__stat-label" data-i18n="age.stat.months">Months</span></li>
+              <li><span class="tool__stat-value" data-age-days>0</span><span class="tool__stat-label" data-i18n="age.stat.days">Days</span></li>
+            </ul>
+
+            <p class="tool__result-title" data-i18n="age.total.title">Total time lived</p>
+            <ul class="tool__stats tool__stats--wide">
+              <li><span class="tool__stat-value" data-age-total-days>0</span><span class="tool__stat-label" data-i18n="age.total.days">Total days</span></li>
+              <li><span class="tool__stat-value" data-age-total-weeks>0</span><span class="tool__stat-label" data-i18n="age.total.weeks">Total weeks</span></li>
+              <li><span class="tool__stat-value" data-age-total-hours>0</span><span class="tool__stat-label" data-i18n="age.total.hours">Total hours</span></li>
+              <li><span class="tool__stat-value" data-age-total-minutes>0</span><span class="tool__stat-label" data-i18n="age.total.minutes">Total minutes</span></li>
+              <li><span class="tool__stat-value" data-age-total-seconds>0</span><span class="tool__stat-label" data-i18n="age.total.seconds">Total seconds</span></li>
+            </ul>
+
+            <p class="tool__result-title" data-i18n="age.birthday.title">Next birthday</p>
+            <p class="tool__note"><span data-age-birthday></span> &middot; <span data-i18n="age.birthday.turning">turning</span> <span data-age-birthday-years></span></p>
+            <p class="tool__note" data-age-birthday-days></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= About the Developer ================= -->
+      <section class="view" data-view-panel="about" role="region" aria-label="About the Developer" data-i18n-attr="aria-label:about.title" id="view-about" hidden>
+        <div class="card about">
+          <p class="about__badge" data-i18n="about.badge">Developer</p>
+          <h2 class="about__title" data-i18n="about.title">About the Developer</h2>
+
+          <dl class="about__details">
+            <div class="about__row">
+              <dt data-i18n="about.field.name">Name</dt>
+              <dd>Kaif Ali</dd>
+            </div>
+            <div class="about__row">
+              <dt data-i18n="about.field.college">College</dt>
+              <dd>Audisankara College of Engineering and Technology</dd>
+            </div>
+            <div class="about__row">
+              <dt data-i18n="about.field.branch">Branch</dt>
+              <dd>CME</dd>
+            </div>
+            <div class="about__row">
+              <dt data-i18n="about.field.year">Year</dt>
+              <dd>Second Year</dd>
+            </div>
+            <div class="about__row">
+              <dt data-i18n="about.field.roll">Roll No.</dt>
+              <dd>25280-CM-072</dd>
+            </div>
+          </dl>
+
+          <h3 class="about__subtitle" data-i18n="about.subtitle">Why I Built Smart Math Calculator</h3>
+          <p class="about__story" data-i18n="about.story.1">I am from North India and currently studying in South India, where my classroom environment is different from the language environment I grew up with. In my mathematics classes, Telugu and English are commonly used together. I am more comfortable understanding Hindi and English, so sometimes the difference in language and pronunciation can make a particular mathematical concept or problem harder for me to follow. My mathematics teacher explains the concepts very well, and I still understand most of the lessons even though the language and the pronunciation are not the ones I am used to.</p>
+          <p class="about__story" data-i18n="about.story.2">Even so, there are moments when a particular problem or idea does not click, usually because of the way the explanation is phrased. In those moments I usually ask an AI tool to explain the same question to me more clearly, step by step, in a way I can follow.</p>
+          <p class="about__story" data-i18n="about.story.3">That is when the idea came to me: why not build my own application that can help me understand mathematics clearly, and can also be useful to other students? That idea became Smart Math Calculator.</p>
+          <p class="about__story" data-i18n="about.story.4">The app is not meant to only produce an answer. It is meant to help you understand the solution, through clear step-by-step explanations written in a way that is easy to follow.</p>
+          <p class="about__story" data-i18n="about.story.5">I also want the app to support multiple languages, so that students from different language backgrounds can use it comfortably, including English, Hindi or Roman Hindi, and Telugu or Roman Telugu.</p>
+
+          <!-- Key Advantages and Limitations.
+               Every sentence below is a data-i18n reference, so it is translated
+               into all five languages and follows the language switch.
+               .about__details and .about__row are reused exactly as they are
+               (no CSS is added anywhere). The global `ul` reset removes list
+               markers, so each list is a plain, evenly spaced block inside the
+               same bordered box the developer details use. .about__list and
+               .about__item are descriptive hooks for future styling only. -->
+          <h3 class="about__subtitle" data-i18n="about.advantages.title">Key Advantages</h3>
+          <ul class="about__details about__list">
+            <li class="about__row about__item" data-i18n="about.advantages.1">Local first: many supported calculations are done right in your browser, without sending your question anywhere.</li>
+            <li class="about__row about__item" data-i18n="about.advantages.2">Step-by-step explanations: for supported problems the Smart Math Solver can show the question, the given values, the formula, the substitution, the working, a check of the answer and the final answer.</li>
+            <li class="about__row about__item" data-i18n="about.advantages.3">Optional AI fallback: if a question is outside what the local solver can do, the app can use the AI solver, but only when an AI backend has been set up and is available. Not every question is sent to the AI.</li>
+            <li class="about__row about__item" data-i18n="about.advantages.4">Five languages: English, Hindi, Roman Hindi, Telugu and Roman Telugu, so students from different language backgrounds can read the interface and follow the explanations more easily.</li>
+            <li class="about__row about__item" data-i18n="about.advantages.5">Math Keyboard: a small keyboard under the question box with the symbols and functions you use most, such as π, √, ∛, ², ³, +, −, ×, ÷, sin(, cos(, tan( and other supported functions. Tapping a key puts it at the cursor, and it only offers what this app can actually handle.</li>
+            <li class="about__row about__item" data-i18n="about.advantages.6">Two extra tools: a Number System Converter for decimal, binary, octal and hexadecimal, and an Age / date-of-birth Calculator.</li>
+            <li class="about__row about__item" data-i18n="about.advantages.7">Stays on your device: supported local calculations run in your browser, and your calculation history is saved only on this device.</li>
+          </ul>
+
+          <h3 class="about__subtitle" data-i18n="about.limitations.title">Limitations</h3>
+          <ul class="about__details about__list">
+            <li class="about__row about__item" data-i18n="about.limitations.1">The local math solver does not understand every possible problem. Today it focuses on arithmetic, percentages, fractions, simple linear equations, simple quadratic equations, powers, roots, basic trigonometry, and simple area and circumference questions. It is not a complete advanced maths engine.</li>
+            <li class="about__row about__item" data-i18n="about.limitations.2">AI help is optional, and it is not unlimited. It works only when an AI backend has been set up for this app, and whether it works at a given moment depends on that service being available. AI requests can also fail, or be turned away by the rate limits or usage quotas of the provider. This app does not promise any fixed number of free AI questions.</li>
+            <li class="about__row about__item" data-i18n="about.limitations.3">Supported local calculations work in your browser. Only the optional AI part needs the configured AI service to be reachable, so it depends on a network connection. Everything else keeps working without it.</li>
+            <li class="about__row about__item" data-i18n="about.limitations.4">If a question is outside the topics the local solver supports, and the AI part is not available, the app will honestly say the question is not supported instead of guessing. AI is not a promise that every unsupported question can be answered.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p class="app-footer__brand" data-i18n="footer.brand">Developed by Kaif</p>
+      <span data-i18n="footer.note">Calculations run in your browser - no account. History is saved on this device only.</span>
+    </footer>
+  </div>
+
+  <!-- First-run username popup. Asks for ONE username and nothing else: no email,
+       no password, no phone, no date of birth, no location, no device details. -->
+  <div class="username-overlay" data-username-overlay hidden>
+    <div class="username-card" role="dialog" aria-modal="true" aria-labelledby="username-title">
+      <h2 class="username-card__title" id="username-title" data-i18n="username.title">Welcome!</h2>
+      <p class="username-card__text" data-i18n="username.text">Please choose a username</p>
+      <form class="username-card__form" data-username-form>
+        <label class="username-card__label" for="username-input" data-i18n="username.label">Username</label>
+        <input
+          class="username-card__input"
+          id="username-input"
+          data-username-input
+          type="text"
+          maxlength="24"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="Type a name"
+          data-i18n-attr="placeholder:username.placeholder"
+        />
+        <p class="username-card__error" data-username-error role="status" aria-live="polite" hidden></p>
+        <button class="username-card__btn" type="submit" data-username-submit>Continue</button>
+      </form>
+      <p class="username-card__note" data-i18n="username.note">Saved on this device. Only the username is ever sent, and only when you are online.</p>
+    </div>
+  </div>
+
+  <!-- frontend configuration (endpoint URL only - never a key) -->
+  <script src="js/config.js"></script>
+  <!-- core logic (no DOM) -->
+  <script src="js/core/expression-engine.js"></script>
+  <script src="js/core/format.js"></script>
+  <script src="js/core/calculator-model.js"></script>
+  <script src="js/core/number-base.js"></script>
+  <script src="js/core/age-calculator.js"></script>
+  <!-- local services -->
+  <script src="js/services/storage.js"></script>
+  <script src="js/services/history-store.js"></script>
+  <script src="js/services/settings-store.js"></script>
+  <script src="js/services/i18n.js"></script>
+  <script src="js/services/math-solver.js"></script>
+  <script src="js/services/ai-math-solver.js"></script>
+  <script src="js/services/username-service.js"></script>
+  <!-- ui -->
+  <script src="js/ui/dom.js"></script>
+  <script src="js/ui/theme.js"></script>
+  <script src="js/ui/calculator-view.js"></script>
+  <script src="js/ui/calculator-modes.js"></script>
+  <script src="js/ui/history-view.js"></script>
+  <script src="js/ui/number-base-view.js"></script>
+  <script src="js/ui/age-view.js"></script>
+  <script src="js/ui/navigation.js"></script>
+  <script src="js/ui/math-keyboard.js"></script>
+  <script src="js/ui/math-keyboard-view.js"></script>
+  <script src="js/ui/solver-view.js"></script>
+  <script src="js/ui/username-view.js"></script>
+  <!-- bootstrap -->
+  <script src="js/app.js"></script>
+</body>
+</html>

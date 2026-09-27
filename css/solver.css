@@ -1,0 +1,428 @@
+/* =============================================================================
+   Smart Math Calculator - Smart Solver view (Part 3A, interface only)
+   Mobile first. No network, no animation loops, no heavy libraries.
+   The solver collects a question only; the engine plugs in during Part 3B.
+   ============================================================================= */
+
+.solver {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.solver__badge {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.solver__title {
+  font-size: clamp(1.2rem, 4.6vw, 1.45rem);
+  letter-spacing: -0.01em;
+}
+
+.solver__desc {
+  color: var(--text);
+  font-size: clamp(0.92rem, 3.8vw, 1rem);
+}
+
+.solver__note {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* --------------------------------------------- mode selection (Direct/Full) */
+
+.solver__modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.solver__mode {
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.25;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.solver__mode:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.solver__mode.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.solver__mode-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ input */
+
+.solver__label {
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.solver__input {
+  width: 100%;
+  max-width: 100%;
+  min-height: 112px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.solver__input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+/* ----------------------------------------------------------------- actions */
+
+.solver__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.solver__btn {
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.solver__btn--primary {
+  flex: 1 1 180px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.solver__btn--primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+.solver__btn--ghost {
+  flex: 0 1 auto;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  min-width: 96px;
+}
+
+.solver__btn--ghost:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* ------------------------------------------------------------------ result */
+
+.solver__result {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface-2);
+  padding: 12px;
+  min-width: 0;
+}
+
+.solver__result[hidden] {
+  display: none;
+}
+
+.solver__result-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.solver__result-body {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.solver__result--error .solver__result-body {
+  color: var(--danger);
+}
+
+.solver__result--info .solver__result-body {
+  color: var(--text);
+}
+
+.solver__result--unsupported .solver__result-title {
+  color: var(--muted);
+}
+
+.solver__result--unsupported .solver__result-body {
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------- examples */
+
+.solver__examples {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+  min-width: 0;
+}
+
+.solver__examples-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.solver__examples-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.solver__examples-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.solver__examples-list button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  max-width: 100%;
+}
+
+.solver__examples-list button:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.solver__offline {
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------- result source badge ----- */
+/* Subtle provenance label: "Local Solver" or "AI Solver". Plain text only.   */
+
+.solver__source {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-bottom: 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.solver__source[hidden] {
+  display: none;
+}
+
+/* ------------------------------------------------------------ AI loading --- */
+
+.solver__result--loading {
+  border-color: var(--accent);
+}
+
+.solver__result--loading .solver__result-title {
+  color: var(--accent-strong);
+}
+
+.solver__result--loading .solver__result-body {
+  color: var(--muted);
+}
+
+@media (min-width: 640px) {
+  .solver {
+    gap: 14px;
+  }
+
+  .solver__input {
+    min-height: 128px;
+  }
+}
+
+/* =============================================================================
+   Math Keyboard (Phase 2) - part of the Smart Solver card only.
+
+   Mobile first. The panel is an ordinary block in the normal flow, so it can
+   never cover the Solve / Clear buttons, and it is sized by the grid rather
+   than by fixed widths, so it cannot overflow a narrow screen.
+
+   `display: grid` on the panel would otherwise defeat the `hidden` attribute,
+   so the hidden rule is repeated here. No animation is used at all; the
+   reduced-motion block below only exists so that adding one later is safe.
+   ============================================================================= */
+
+.solver__mathkbd {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.solver__mathkbd-toggle {
+  flex: 0 1 auto;
+  align-self: flex-start;
+  justify-self: flex-start;
+  min-width: 0;
+  min-height: 48px;
+}
+
+.mathkbd {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface-2);
+  min-width: 0;
+}
+
+.mathkbd[hidden] {
+  display: none;
+}
+
+.mathkbd__hint {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.mathkbd__group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mathkbd__group-title {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mathkbd__keys {
+  display: grid;
+  /* auto-fill + minmax keeps every key at least 52px and wraps on its own,
+     so a long row of function keys never scrolls the card sideways. */
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.mathkbd__key {
+  min-width: 0;
+  min-height: 48px;
+  padding: 6px 4px;
+  border: 1px solid var(--key-border);
+  border-radius: var(--radius-key);
+  background: var(--key-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  overflow-wrap: anywhere;
+}
+
+.mathkbd__key:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.mathkbd__key:active {
+  background: var(--key-active);
+}
+
+.mathkbd__key:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.solver__mathkbd-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (min-width: 640px) {
+  .mathkbd {
+    padding: 14px;
+  }
+
+  .mathkbd__keys {
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+    gap: 8px;
+  }
+
+  .mathkbd__key {
+    min-height: 50px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mathkbd__key,
+  .solver__mathkbd-toggle {
+    transition: none;
+  }
+}
