@@ -48,6 +48,18 @@ const DEFAULTS = Object.freeze({
 const PROVIDERS = Object.freeze(['none', 'generic', 'gemini', 'openrouter']);
 
 /**
+ * Bind address used only when a managed host assigns PORT for us and does not
+ * set HOST (Render, Railway, Heroku, Fly, ...). Those platforms route traffic
+ * to the service on its public interface, so the loopback default would leave
+ * the process listening where nothing can reach it.
+ *
+ * Local development is untouched: DEFAULTS.host stays 127.0.0.1, an explicit
+ * HOST always wins, and a developer who exports nothing at all (no PORT) keeps
+ * the loopback default. Nothing secret is involved - this is a bind address.
+ */
+const MANAGED_HOST = '0.0.0.0';
+
+/**
  * Gemini endpoint base. Public endpoint, not a secret.
  * Full URL: GEMINI_BASE_URL + '/models/' + <model> + ':generateContent'.
  */
@@ -211,8 +223,18 @@ function readConfig(env) {
       ? DEFAULTS.authScheme
       : text(source.AI_PROVIDER_AUTH_SCHEME);
 
+  // A platform-supplied PORT is the signal that this process is being run
+  // behind a managed proxy. It must actually parse, so a typo such as
+  // PORT=abc keeps the loopback default instead of exposing 0.0.0.0:8787.
+  const environmentPort = text(source.PORT);
+  const hasEnvironmentPort =
+    environmentPort !== '' && Number.isFinite(Number.parseInt(environmentPort, 10));
+
   return {
-    host: text(source.HOST) || DEFAULTS.host,
+    // HOST from the environment always wins. Otherwise: a platform that handed
+    // us a usable PORT expects a public bind address, while a standalone run
+    // keeps the loopback default. DEFAULTS.host itself is unchanged.
+    host: text(source.HOST) || (hasEnvironmentPort ? MANAGED_HOST : DEFAULTS.host),
     port: integer(source.PORT, DEFAULTS.port, 1, 65535),
     provider: provider,
     providerUrl: resolvedUrl,
